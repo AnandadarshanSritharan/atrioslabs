@@ -39,6 +39,10 @@ export async function POST(request: NextRequest) {
     }
 
     const result = await uploadImage(buffer, "atrioslabs/projects");
+    console.log("Cloudinary upload result:", {
+      publicId: result.publicId,
+      url: result.url
+    });
 
     return NextResponse.json({
       success: true,
@@ -46,7 +50,10 @@ export async function POST(request: NextRequest) {
       publicId: result.publicId,
     });
   } catch (error) {
-    console.error("POST /api/upload error:", error);
-    return NextResponse.json({ error: "Upload failed" }, { status: 500 });
+    console.error("Upload API Error details:", error);
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Upload failed" },
+      { status: 500 }
+    );
   }
 }

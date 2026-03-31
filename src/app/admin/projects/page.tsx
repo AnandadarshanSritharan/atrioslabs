@@ -23,6 +23,7 @@ interface Project {
   title: string;
   description: string;
   image: string;
+  imagePublicId?: string;
   category: "Web" | "AI" | "IoT" | "Apps";
   tags: string[];
   liveUrl?: string;
@@ -43,6 +44,7 @@ export default function AdminProjects() {
     title: "",
     description: "",
     image: "",
+    imagePublicId: "",
     category: "Web",
     tags: "",
     liveUrl: "",
@@ -73,6 +75,7 @@ export default function AdminProjects() {
       title: project.title,
       description: project.description,
       image: project.image,
+      imagePublicId: project.imagePublicId || "",
       category: project.category,
       tags: project.tags.join(", "),
       liveUrl: project.liveUrl || "",
@@ -113,7 +116,7 @@ export default function AdminProjects() {
       });
       const data = await res.json();
       if (data.success) {
-        setFormData({ ...formData, image: data.url });
+        setFormData({ ...formData, image: data.url, imagePublicId: data.publicId });
         toast.success("Image uploaded!");
       } else {
         toast.error(data.error || "Upload failed");
@@ -152,6 +155,7 @@ export default function AdminProjects() {
           title: "",
           description: "",
           image: "",
+          imagePublicId: "",
           category: "Web",
           tags: "",
           liveUrl: "",
@@ -185,6 +189,7 @@ export default function AdminProjects() {
               title: "",
               description: "",
               image: "",
+              imagePublicId: "",
               category: "Web",
               tags: "",
               liveUrl: "",

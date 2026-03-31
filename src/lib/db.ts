@@ -1,6 +1,12 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/atrioslabs";
+const MONGODB_URI = process.env.MONGODB_URI;
+
+if (process.env.NODE_ENV === "production" && !MONGODB_URI) {
+  throw new Error("Please define the MONGODB_URI environment variable inside Vercel Dashboard");
+}
+
+const CONNECTION_URI = MONGODB_URI || "mongodb://localhost:27017/atrioslabs";
 
 interface GlobalMongoose {
   conn: typeof mongoose | null;
@@ -28,7 +34,7 @@ async function connectDB(): Promise<typeof mongoose> {
       bufferCommands: false,
     };
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongooseInstance) => {
+    cached.promise = mongoose.connect(CONNECTION_URI, opts).then((mongooseInstance) => {
       console.log("✅ MongoDB connected");
       return mongooseInstance;
     });

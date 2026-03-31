@@ -31,11 +31,23 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     await connectDB();
     const { id } = await params;
     const body = await request.json();
-    const project = await Project.findByIdAndUpdate(id, body, { new: true, runValidators: true });
 
-    if (!project) {
+    // Get the existing project to check for the old image
+    const oldProject = await Project.findById(id);
+    if (!oldProject) {
       return NextResponse.json({ error: "Project not found" }, { status: 404 });
     }
+
+    // If the image is being changed and there's an old publicId, delete it from Cloudinary
+    if (body.imagePublicId && oldProject.imagePublicId && body.imagePublicId !== oldProject.imagePublicId) {
+      try {
+        await deleteImage(oldProject.imagePublicId);
+      } catch (err) {
+        console.warn("Failed to delete old image from Cloudinary:", err);
+      }
+    }
+
+    const project = await Project.findByIdAndUpdate(id, body, { new: true, runValidators: true });
 
     return NextResponse.json({ success: true, data: project });
   } catch (error) {
