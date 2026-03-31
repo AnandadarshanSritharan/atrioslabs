@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate JWT
-    const token = signToken({ adminId: admin._id, email: admin.email });
+    const token = signToken({ adminId: admin._id.toString(), email: admin.email });
 
     // Return success AND set HttpOnly cookie
     const response = NextResponse.json(
