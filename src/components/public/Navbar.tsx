@@ -29,10 +29,23 @@ export default function Navbar() {
 
   const scrollTo = (href: string) => {
     setMobileOpen(false);
-    const el = document.querySelector(href);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
+    
+    // Small delay to allow the menu to begin closing animation on mobile
+    setTimeout(() => {
+      const el = document.querySelector(href);
+      if (el) {
+        const offset = 80; // Fixed header height
+        const bodyRect = document.body.getBoundingClientRect().top;
+        const elementRect = el.getBoundingClientRect().top;
+        const elementPosition = elementRect - bodyRect;
+        const offsetPosition = elementPosition - offset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth"
+        });
+      }
+    }, 150);
   };
 
   return (
